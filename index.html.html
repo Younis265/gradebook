@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>سجل الدرجات الإلكتروني للمعلم والمدرس</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--bg:#f1f4f3;--card:#fff;--ink:#14302c;--mut:#5b6e6a;--line:#d3dcd9;--pri:#17524a;--pri-t:#fff;--bad:#c62828;--s1:#e4edf8;--s1h:#2f5f95;--hf:#f8edd0;--hfh:#9c7218;--s2:#dcefec;--s2h:#1d7a72;--yr:#ece4f4;--yrh:#69499a;--in:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1917;--card:#17252a;--ink:#e4efec;--mut:#9fb3ae;--line:#2c4040;--pri:#4fb3a5;--pri-t:#08201c;--bad:#ff8a80;--s1:#1b2b3d;--hf:#3a3017;--s2:#15332f;--yr:#2a2339;--in:#10201f}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.6 "IBM Plex Sans Arabic",Tahoma,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1500px;margin:auto;padding:12px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--pri);color:var(--pri-t);padding:10px 14px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--pri);z-index:6}
+header h1{font-size:17px;margin:0;font-weight:700;flex:1 1 260px}
+.st{font-size:12px;opacity:.92}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#7ee2a8;margin-inline-end:6px}.off .dot{background:#f2b84b}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 13px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--pri)}.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #e0a82e;outline-offset:1px}
+header .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.35);color:inherit}header .btn:hover{background:rgba(255,255,255,.24)}
+header .hot{background:#e0a82e;border-color:#e0a82e;color:#24190a;font-weight:700}
+.on{background:#e0a82e!important;color:#24190a!important}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:10px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:3px}
+label input,label select,.bar input{border:1px solid var(--line);background:var(--in);border-radius:7px;padding:7px 9px;color:var(--ink);min-width:0}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 100%}
+.tab{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:6px 12px;cursor:pointer}
+.tab b{background:var(--line);border-radius:10px;padding:0 7px;margin-inline-start:6px;font-size:12px}
+.tab.act{background:var(--pri);color:var(--pri-t);border-color:var(--pri)}.tab.act b{background:rgba(255,255,255,.25)}
+.sep{width:1px;height:24px;background:var(--line)}.sp{flex:1}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.stats div{flex:1 1 120px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.stats small{display:block;color:var(--mut);font-size:12px}.stats strong{font-size:20px}
+.sheet{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--card);margin-top:10px}
+table{border-collapse:collapse;width:100%;min-width:1450px}
+th,td{border:1px solid var(--line);padding:0;text-align:center}
+th{padding:6px 4px;font-size:12.5px;font-weight:600;color:#fff;white-space:nowrap}
+thead tr:first-child th{position:sticky;top:0}
+th.n0,th.nm0{background:var(--pri);color:var(--pri-t)}th.s1{background:var(--s1h)}th.h{background:var(--hfh)}th.s2{background:var(--s2h)}th.yr{background:var(--yrh)}
+td.n{width:38px;color:var(--mut);font-size:12px}td.nm{min-width:190px}
+td input{width:100%;border:0;background:transparent;text-align:center;padding:7px 2px;min-width:46px}
+td.nm input,td.nt input{text-align:right;padding-inline:8px}td.nt input{min-width:110px}
+td.s1{background:var(--s1)}td.h{background:var(--hf)}td.s2{background:var(--s2)}td.yr{background:var(--yr)}
+td.c input{font-weight:700}td.man input{text-decoration:underline dotted}
+input.low{color:var(--bad);font-weight:700}
+.del{border:0;background:none;color:var(--bad);font-size:18px;cursor:pointer;padding:0 8px}
+.empty{padding:30px;color:var(--mut);text-align:center}
+footer{margin-top:10px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;color:var(--mut);font-size:12.5px}
+.lk .lockable{opacity:.45;pointer-events:none}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:18px;width:min(520px,94vw)}
+dialog::backdrop{background:rgba(0,0,0,.45)}dialog h3{margin:0 0 10px}dialog textarea{width:100%;min-height:200px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--in)}
+.acts{display:flex;gap:8px;justify-content:flex-start;margin-top:12px;flex-wrap:wrap}.acts .go{background:var(--pri);color:var(--pri-t);border-color:var(--pri)}
+.snap{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:6px 0}
+#toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));inset-inline:0;margin:auto;width:max-content;max-width:90vw;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}#toast.show{opacity:1}
+.ph,.pf{display:none}
+@media print{@page{size:A4 landscape;margin:8mm}.noprint,header,body::before{display:none!important}body{background:#fff;color:#000;font-size:10px}.wrap{padding:0;max-width:none}.card,.sheet,.stats div{border:0;padding:0;background:none}.sheet{overflow:visible}table{min-width:0}th,td{border-color:#555;-webkit-print-color-adjust:exact;print-color-adjust:exact}td input{padding:2px;min-width:0;font-size:10px}tr[hidden]{display:table-row}.ph{display:block;text-align:center;margin-bottom:6px}.ph h2{margin:0;font-size:15px}.ph div{display:flex;justify-content:space-between;margin-top:4px}.pf{display:flex;justify-content:space-around;margin-top:26px}.stats{margin-top:4px}}
+</style>
+</head>
+<body>
+<header class="noprint">
+<h1>سجل الدرجات الإلكتروني للمعلم والمدرس</h1>
+<span class="st" id="net"><i class="dot"></i><span id="netx">الحفظ التلقائي مفعل</span> &nbsp;|&nbsp; <span id="sync">جاهز</span></span>
+<button class="btn" id="bBk">نسخ احتياطي واسترداد</button>
+<button class="btn" id="bOf">نسخة أوفلاين</button>
+<button class="btn" id="bLk">قفل الإضافة</button>
+<button class="btn hot" id="bSv">حفظ كل التغييرات</button>
+<button class="btn" id="bEx">سحب ملف Excel</button>
+<button class="btn" id="bIm">استيراد Excel</button>
+<button class="btn" id="bPr">طباعة الورقة</button>
+<input type="file" id="fx" accept=".xlsx,.xls,.csv" hidden><input type="file" id="fj" accept=".json" hidden>
+</header>
+<div class="wrap">
+<section class="card noprint">
+<div class="meta">
+<label>اسم المدرسة (اختياري)<input id="mS"></label>
+<label>اسم المعلم / المدرس (اختياري)<input id="mT"></label>
+<label>المادة الدراسية لهذا الصف (اختياري)<input id="mB"></label>
+<label>العام الدراسي (اختياري)<input id="mY" placeholder="2026 - 2027"></label>
+<label>طريقة احتساب المعدلات<select id="mM"><option value="auto">حساب تلقائي للمعدلات + تعديل يدوي</option><option value="man">إدخال يدوي حر بالكامل</option></select></label>
+</div>
+<div class="bar" style="margin-top:12px">
+<div class="tabs" id="tabs"></div>
+<span class="lockable bar"><input id="nC" placeholder="اسم صف جديد، مثال: الثاني المتوسط - ب"><button class="btn" id="bC">إضافة صف</button><button class="btn" id="bCd">صف مفصل</button></span>
+<button class="btn lockable" id="bCe">تعديل الصف</button><button class="btn lockable" id="bCx">حذف الصف</button>
+</div>
+</section>
+<section class="card noprint bar">
+<span class="lockable bar"><input id="nS" placeholder="اسم الطالب الثلاثي ثم Enter"><button class="btn" id="bS">إضافة طالب</button><button class="btn" id="bBl">إضافة قائمة أسماء</button><button class="btn" id="bRw">سطر فارغ</button></span>
+<span class="sep"></span><input id="q" placeholder="بحث عن اسم طالب"><button class="btn lockable" id="bSo">ترتيب أبجدي</button>
+<span class="sp"></span><b id="cnt"></b>
+</section>
+<div class="ph"><h2 id="pT"></h2><div id="pM"></div></div>
+<div class="stats" id="stats"></div>
+<div class="sheet"><table><thead id="th"></thead><tbody id="tb"></tbody></table></div>
+<div class="pf"><span id="pf1"></span><span>مدير المدرسة</span><span>المشرف التربوي</span></div>
+<footer class="noprint"><span>تعليمات: اكتب الدرجات مباشرة، Enter للنزول لخانة الطالب التالي، الخانات الملونة بخط منقط هي معدلات عدّلتها يدوياً، وامسحها لتعود للحساب التلقائي.</span><span class="sp"></span><button class="btn" id="bEa">تصدير كل الصفوف</button><button class="btn hot" id="bSv2">حفظ شامل</button></footer>
+</div>
+<dialog id="dlg"></dialog><div id="toast"></div>
+<script>
+const F=['a1','b1','c1','u1','d1','m1','h','a2','b2','c2','u2','d2','m2','ef','ex','yr'];
+const H=['شهر أول','يومي','شهر ثاني','يومي ثاني','شهر ثالث','معدل ف1','نصف السنة','شهر أول','يومي','شهر ثاني','يومي ثاني','شهر ثالث','معدل ف2','السعي السنوي','امتحان السنة','درجة السنة'];
+const C={m1:['a1','b1','c1','u1','d1'],m2:['a2','b2','c2','u2','d2'],ef:['m1','h','m2'],yr:['ef','ex']};
+const K='gradebook.v2',SK='gradebook.snaps';
+const $=s=>document.querySelector(s),uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const gp=j=>j<6?'s1':j==6?'h':j<12?'s2':'yr';
+const num=v=>(v===''||v==null||isNaN(+v))?null:+v;
+const avg=a=>{a=a.filter(x=>x!=null);return a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):null};
+let D,tm,lastSnap=0;
+const mk=(n,s)=>({id:uid(),name:n,subject:s||'',students:[]});
+const mkS=n=>({id:uid(),n:n||'',v:{},nt:''});
+function load(){try{D=JSON.parse(localStorage.getItem(K))}catch(e){}
+ if(!D&&window.__SEED)D=window.__SEED;
+ if(!D||!D.classes||!D.classes.length){D={meta:{school:'',teacher:'',year:'',mode:'auto'},locked:false,cur:'',classes:[mk('الصف الأول')]}}
+ if(!D.classes.some(c=>c.id===D.cur))D.cur=D.classes[0].id}
+const cls=()=>D.classes.find(c=>c.id===D.cur);
+function val(s,k){const m=num(s.v[k]);if(m!=null||!C[k]||D.meta.mode!=='auto')return m;return avg(C[k].map(x=>val(s,x)))}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),2600)}
+function persist(manual){const j=JSON.stringify(D);try{localStorage.setItem(K,j)}catch(e){toast('تعذر الحفظ في المتصفح، نزّل نسخة احتياطية الآن');return}
+ const t=new Date();$('#sync').textContent='تم الحفظ '+t.toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});
+ if(manual||Date.now()-lastSnap>3e5){lastSnap=Date.now();try{const a=JSON.parse(localStorage.getItem(SK)||'[]');if(!a.length||a[0].d!==j){a.unshift({t:Date.now(),d:j});localStorage.setItem(SK,JSON.stringify(a.slice(0,5)))}}catch(e){}}}
+const saveSoon=()=>{$('#sync').textContent='جارٍ الحفظ...';clearTimeout(tm);tm=setTimeout(()=>persist(),350)};
+function guard(){if(D.locked){toast('السجل مقفل. افتح القفل أولاً.');return true}}
+function modal(title,body,ok,txt){const d=$('#dlg');d.innerHTML=`<h3>${title}</h3>${body}<div class="acts">${ok?`<button class="btn go" id="mOk">${txt||'حفظ'}</button>`:''}<button class="btn" id="mNo">${ok?'إلغاء':'إغلاق'}</button></div>`;
+ $('#mNo').onclick=()=>d.close();if(ok)$('#mOk').onclick=()=>{if(ok()!==false)d.close()};d.showModal()}
+function head(){let r1=`<tr><th class="n0" rowspan="2">#</th><th class="nm0" rowspan="2">اسم الطالب</th><th class="s1" colspan="6">الفصل الأول</th><th class="h" rowspan="2">نصف السنة</th><th class="s2" colspan="6">الفصل الثاني</th><th class="yr" colspan="3">السنة / النتيجة</th><th class="n0" rowspan="2">ملاحظات</th><th class="n0 noprint" rowspan="2"></th></tr><tr>`;
+ H.forEach((h,j)=>{if(j!=6)r1+=`<th class="${gp(j)}">${h}</th>`});$('#th').innerHTML=r1+'</tr>'}
+function rowHtml(s,i,q){const hid=q&&!s.n.includes(q)?' hidden':'';
+ return `<tr data-id="${s.id}"${hid}><td class="n">${i+1}</td><td class="nm"><input data-k="n" value="${esc(s.n)}" placeholder="اسم الطالب"${D.locked?' readonly':''}></td>`+F.map((k,j)=>`<td class="${gp(j)}${C[k]?' c':''}"><input inputmode="decimal" data-k="${k}"></td>`).join('')+`<td class="nt"><input data-k="nt" value="${esc(s.nt)}"></td><td class="noprint">${D.locked?'':'<button class="del" data-del title="حذف الطالب">×</button>'}</td></tr>`}
+function refresh(tr,force){const s=cls().students.find(x=>x.id===tr.dataset.id);if(!s)return;
+ tr.querySelectorAll('input').forEach(el=>{const k=el.dataset.k;if(!F.includes(k))return;const man=s.v[k]!=null&&s.v[k]!=='';
+  if(force||el!==document.activeElement){const v=man?s.v[k]:val(s,k);el.value=v==null?'':v}
+  el.classList.toggle('low',num(el.value)!=null&&+el.value<50);el.parentNode.classList.toggle('man',man&&!!C[k]&&D.meta.mode==='auto')})}
+function stats(){const S=cls().students,y=S.map(s=>val(s,'yr')).filter(x=>x!=null),p=y.filter(x=>x>=50).length,m=y.filter(x=>x>=35&&x<50).length,f=y.length-p-m;
+ const b=(l,v)=>`<div><small>${l}</small><strong>${v}</strong></div>`;
+ $('#stats').innerHTML=b('إجمالي الطلاب',S.length)+b('ناجح',p)+b('مكمل',m)+b('راسب',f)+b('نسبة النجاح',y.length?Math.round(p/y.length*100)+'%':'-')+b('المعدل العام',y.length?(y.reduce((a,c)=>a+c,0)/y.length).toFixed(1):'-');$('#cnt').textContent='عدد الطلاب: '+S.length}
+function render(){const c=cls();document.body.classList.toggle('lk',D.locked);$('#bLk').textContent=D.locked?'فتح القفل':'قفل الإضافة';$('#bLk').classList.toggle('on',D.locked);
+ $('#tabs').innerHTML=D.classes.map(x=>`<button class="tab${x.id===D.cur?' act':''}" data-c="${x.id}">${esc(x.name)}<b>${x.students.length}</b></button>`).join('');
+ $('#mS').value=D.meta.school;$('#mT').value=D.meta.teacher;$('#mY').value=D.meta.year;$('#mM').value=D.meta.mode;$('#mB').value=c.subject;
+ const q=$('#q').value.trim();$('#tb').innerHTML=c.students.length?c.students.map((s,i)=>rowHtml(s,i,q)).join(''):'<tr><td colspan="20" class="empty">لا يوجد طلاب في هذا الصف. أضف اسماً أو الصق قائمة أسماء أو استورد ملف Excel.</td></tr>';
+ $('#tb').querySelectorAll('tr[data-id]').forEach(tr=>refresh(tr,true));stats();
+ const m=D.meta;$('#pT').textContent=`${m.school||''} - سجل درجات الطلاب${m.year?' - العام الدراسي '+m.year:''}`;$('#pM').innerHTML=`<span>الصف: ${esc(c.name)}</span><span>المادة: ${esc(c.subject)}</span><span>المدرس: ${esc(m.teacher)}</span>`;$('#pf1').textContent='مدرس المادة: '+(m.teacher||'............')}
+const upd=()=>{render();saveSoon()};
+function addClass(n,s){if(guard())return;n=(n||'').trim();if(!n)return toast('اكتب اسم الصف');const c=mk(n,s);D.classes.push(c);D.cur=c.id;$('#nC').value='';upd()}
+function addStu(n){if(guard())return;n=(n||'').trim();if(!n)return toast('اكتب اسم الطالب');cls().students.push(mkS(n));$('#nS').value='';upd();$('#nS').focus()}
+$('#bC').onclick=()=>addClass($('#nC').value);$('#nC').onkeydown=e=>{if(e.key==='Enter')addClass(e.target.value)};
+$('#bS').onclick=()=>addStu($('#nS').value);$('#nS').onkeydown=e=>{if(e.key==='Enter')addStu(e.target.value)};
+$('#bRw').onclick=()=>{if(guard())return;cls().students.push(mkS());upd()};
+$('#bCd').onclick=()=>{if(guard())return;modal('صف مفصل','<label>اسم الصف<input id="x1"></label><br><label>المادة الدراسية<input id="x2"></label>',()=>{if(!$('#x1').value.trim()){toast('اكتب اسم الصف');return false}addClass($('#x1').value,$('#x2').value)},'إضافة')};
+$('#bCe').onclick=()=>{if(guard())return;const c=cls();modal('تعديل الصف',`<label>اسم الصف<input id="x1" value="${esc(c.name)}"></label><br><label>المادة الدراسية<input id="x2" value="${esc(c.subject)}"></label>`,()=>{c.name=$('#x1').value.trim()||c.name;c.subject=$('#x2').value.trim();upd()})};
+$('#bCx').onclick=()=>{if(guard())return;if(D.classes.length<2)return toast('لا يمكن حذف الصف الوحيد المتبقي');const c=cls();modal('حذف الصف',`<p>سيُحذف الصف "${esc(c.name)}" مع ${c.students.length} طالب ودرجاتهم. نزّل نسخة احتياطية قبل الحذف إن لزم.</p>`,()=>{D.classes=D.classes.filter(x=>x!==c);D.cur=D.classes[0].id;upd()},'حذف الصف')};
+$('#bBl').onclick=()=>{if(guard())return;modal('إضافة قائمة أسماء','<p>الصق الأسماء، اسم واحد في كل سطر.</p><textarea id="x1"></textarea>',()=>{const a=$('#x1').value.split(/\n/).map(x=>x.trim()).filter(Boolean);if(!a.length){toast('لم تُدخل أسماء');return false}a.forEach(n=>cls().students.push(mkS(n)));upd();toast('أُضيف '+a.length+' طالب')},'إضافة الأسماء')};
+$('#bSo').onclick=()=>{if(guard())return;cls().students.sort((a,b)=>a.n.localeCompare(b.n,'ar'));upd();toast('تم الترتيب الأبجدي')};
+$('#q').oninput=render;
+$('#tabs').onclick=e=>{const b=e.target.closest('[data-c]');if(b){D.cur=b.dataset.c;render();saveSoon()}};
+[['mS','school'],['mT','teacher'],['mY','year']].forEach(([i,k])=>$('#'+i).oninput=e=>{D.meta[k]=e.target.value;render();saveSoon()});
+$('#mB').oninput=e=>{cls().subject=e.target.value;saveSoon()};$('#mM').onchange=e=>{D.meta.mode=e.target.value;upd()};
+$('#tb').addEventListener('input',e=>{const el=e.target,tr=el.closest('tr'),s=cls().students.find(x=>x.id===tr.dataset.id),k=el.dataset.k;if(!s)return;
+ if(k==='n'){if(D.locked)return;s.n=el.value}else if(k==='nt')s.nt=el.value;
+ else{let v=el.value.replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[^\d.]/g,'');if(v!==el.value)el.value=v;if(v==='')delete s.v[k];else s.v[k]=v;refresh(tr);stats()}
+ saveSoon()});
+$('#tb').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset.k){e.preventDefault();let r=e.target.closest('tr').nextElementSibling;while(r&&r.hidden)r=r.nextElementSibling;const n=r&&r.querySelector(`[data-k="${e.target.dataset.k}"]`);if(n){n.focus();n.select()}}});
+$('#tb').addEventListener('click',e=>{if(!e.target.dataset.del)return;if(guard())return;const tr=e.target.closest('tr'),s=cls().students.find(x=>x.id===tr.dataset.id);modal('حذف الطالب',`<p>حذف ${esc(s.n)||'هذا السطر'} مع درجاته؟</p>`,()=>{cls().students=cls().students.filter(x=>x!==s);upd()},'حذف')});
+$('#bLk').onclick=()=>{D.locked=!D.locked;render();persist();toast(D.locked?'تم القفل: الدرجات فقط قابلة للتعديل':'تم فتح القفل')};
+function saveAll(){const a=document.activeElement;if(a&&a.id==='nS'&&a.value.trim())addStu(a.value);if(a&&a.id==='nC'&&a.value.trim())addClass(a.value);clearTimeout(tm);persist(true);toast(`تم حفظ ${D.classes.length} صف و${D.classes.reduce((n,c)=>n+c.students.length,0)} طالب`)}
+$('#bSv').onclick=$('#bSv2').onclick=saveAll;
+function printDoc(){const c=cls(),m=D.meta,S=c.students,y=S.map(s=>val(s,'yr')).filter(x=>x!=null),p=y.filter(x=>x>=50).length;
+const g=['s1','s1','s1','s1','s1','s1','h','s2','s2','s2','s2','s2','s2','yr','yr','yr'],col={s1:'#e4edf8',h:'#f8edd0',s2:'#dcefec',yr:'#ece4f4'},hc={s1:'#2f5f95',h:'#9c7218',s2:'#1d7a72',yr:'#69499a',n:'#17524a'};
+const th=(t,k,x)=>`<th style="background:${hc[k]}" ${x||''}>${t}</th>`;
+const h=`<tr>${th('#','n','rowspan=2')}${th('اسم الطالب','n','rowspan=2')}${th('الفصل الأول','s1','colspan=6')}${th('نصف السنة','h','rowspan=2')}${th('الفصل الثاني','s2','colspan=6')}${th('السنة / النتيجة','yr','colspan=3')}${th('ملاحظات','n','rowspan=2')}</tr><tr>`+H.map((t,j)=>j==6?'':th(t,g[j])).join('')+'</tr>';
+const b=S.map((s,i)=>`<tr><td>${i+1}</td><td class=nm>${esc(s.n)}</td>`+F.map((k,j)=>{const v=val(s,k);return `<td style="background:${col[g[j]]}${v!=null&&v<50?';color:#c62828;font-weight:700':''}">${v==null?'':v}</td>`}).join('')+`<td class=nm>${esc(s.nt)}</td></tr>`).join('');
+return `<!DOCTYPE html><html lang=ar dir=rtl><head><meta charset=utf-8><title>${esc(c.name)}</title><style>@page{size:A4 landscape;margin:8mm}body{font:11px Tahoma,Arial,sans-serif;margin:0}h2{text-align:center;margin:0 0 4px;font-size:16px}.i{display:flex;justify-content:space-between;margin:4px 0 8px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #555;padding:3px 2px;text-align:center;-webkit-print-color-adjust:exact;print-color-adjust:exact}th{color:#fff}.nm{text-align:right;padding-inline:5px}.f{display:flex;justify-content:space-around;margin-top:28px}tr{break-inside:avoid}</style></head><body><h2>${esc(m.school)} - سجل درجات وتقييم الطلاب${m.year?' - العام الدراسي '+esc(m.year):''}</h2><div class=i><span>الصف: ${esc(c.name)}</span><span>المادة: ${esc(c.subject)}</span><span>المدرس: ${esc(m.teacher)}</span><span>عدد الطلاب: ${S.length}</span>${y.length?`<span>نسبة النجاح: ${Math.round(p/y.length*100)}%</span>`:''}</div><table><thead>${h}</thead><tbody>${b}</tbody></table><div class=f><span>مدرس المادة: ${esc(m.teacher)||'............'}</span><span>مدير المدرسة</span><span>المشرف التربوي</span></div><script>onload=()=>setTimeout(()=>print(),400)<\/script></body></html>`}
+$('#bPr').onclick=()=>{persist();modal('طباعة الورقة','<p>الطباعة المباشرة قد تُحجب داخل هذه الصفحة. الأضمن: نزّل ملف الطباعة وافتحه، وستظهر نافذة الطباعة تلقائياً بحجم A4 بالعرض، ويمكنك اختيار حفظ كـ PDF.</p><div class="acts"><button class="btn go" id="p1">تنزيل ملف الطباعة</button><button class="btn" id="p2">طباعة مباشرة</button></div>');
+ $('#p1').onclick=()=>{dl('طباعة-'+cls().name+'.html',printDoc(),'text/html');$('#dlg').close()};
+ $('#p2').onclick=()=>{$('#dlg').close();setTimeout(()=>{try{window.print()}catch(e){toast('الطباعة المباشرة محجوبة هنا، استخدم ملف الطباعة')}},200)}};
+async function dl(name,data,mime){try{const d=window.claude&&await claude.use('downloads');if(d){await d.save({filename:name,data});return}}catch(e){if(e&&e.code==='declined')return}
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:mime}));a.download=name;a.click()}
+function sheetFor(c){const m=D.meta,R=[[`سجل درجات وتقييم الطلاب${m.year?' - العام الدراسي '+m.year:''}`],['المدرسة: '+m.school,'المادة: '+c.subject,'الصف والشعبة: '+c.name,'مدرس المادة: '+m.teacher],[],
+ ['ت','اسم الطالب','الفصل الأول','','','','','','نصف السنة','الفصل الثاني','','','','','','السنة','','','ملاحظات'],['','',...H.map((h,i)=>i==6?'':h),'']];
+ c.students.forEach((s,i)=>R.push([i+1,s.n,...F.map(k=>{const v=val(s,k);return v==null?'':v}),s.nt||'']));
+ const w=XLSX.utils.aoa_to_sheet(R),r=(a,b,c1,d)=>({s:{r:a,c:b},e:{r:c1,c:d}});
+ w['!merges']=[r(0,0,0,18),r(3,0,4,0),r(3,1,4,1),r(3,2,3,7),r(3,8,4,8),r(3,9,3,14),r(3,15,3,17),r(3,18,4,18)];w['!cols']=[{wch:5},{wch:28},...F.map(()=>({wch:10})),{wch:18}];return w}
+function exportX(all){if(!window.XLSX)return csvOut(all);const wb=XLSX.utils.book_new(),used=[];(all?D.classes:[cls()]).forEach((c,i)=>{let n=c.name.replace(/[\\\/?*\[\]:]/g,' ').slice(0,28)||'صف';if(used.includes(n))n+=' '+(i+1);used.push(n);XLSX.utils.book_append_sheet(wb,sheetFor(c),n)});
+ wb.Workbook={Views:[{RTL:true}]};dl((all?'سجل-الدرجات-كل-الصفوف':'درجات-'+cls().name)+'.xlsx',new Uint8Array(XLSX.write(wb,{bookType:'xlsx',type:'array'})),'application/octet-stream')}
+function csvOut(all){const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';let o='\ufeff';(all?D.classes:[cls()]).forEach(c=>{o+=q('الصف: '+c.name)+','+q('المادة: '+c.subject)+'\r\n'+['ت','اسم الطالب',...H,'ملاحظات'].map(q).join(',')+'\r\n';c.students.forEach((s,i)=>{o+=[i+1,s.n,...F.map(k=>val(s,k)),s.nt].map(q).join(',')+'\r\n'});o+='\r\n'});dl('درجات.csv',o,'text/csv');toast('بدون إنترنت: صُدّر الملف بصيغة CSV ويفتح في Excel')}
+function csvToA(t){const R=[];let r=[],c='',q=0;t=t.replace(/^\ufeff/,'');for(let i=0;i<t.length;i++){const x=t[i];if(q){if(x=='"'){if(t[i+1]=='"'){c+='"';i++}else q=0}else c+=x}else if(x=='"')q=1;else if(x==','||x==';'){r.push(c);c=''}else if(x=='\n'||x=='\r'){if(x=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';R.push(r);r=[]}else c+=x}if(c||r.length){r.push(c);R.push(r)}return R}
+function offlineCopy(){persist(true);const app=Array.from(document.scripts).find(x=>!x.src&&x.textContent.includes('const F=[')),css=Array.from(document.querySelectorAll('style')).find(x=>x.textContent.includes('--bg:'));if(!app||!css)return toast('تعذر تجهيز النسخة');
+ const b=document.body.cloneNode(true);b.querySelectorAll('script').forEach(x=>x.remove());const d=b.querySelector('#dlg');d.innerHTML='';d.removeAttribute('open');b.querySelector('#toast').className='';
+ const seed='<script>window.__SEED='+JSON.stringify(D).replace(/</g,'\\u003c')+'<\/script>';
+ const h='<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>سجل الدرجات الإلكتروني</title><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script><style>'+css.textContent+'</style></head><body>'+b.innerHTML+seed+'<script>'+app.textContent+'<\/script></body></html>';
+ dl('سجل-الدرجات-أوفلاين.html',h,'text/html');toast('نزّل الملف وافتحه من الجهاز ليعمل بدون إنترنت')}
+$('#bOf').onclick=offlineCopy;
+$('#bEx').onclick=()=>exportX(false);$('#bEa').onclick=()=>exportX(true);
+$('#bIm').onclick=()=>{if(guard())return;$('#fx').click()};
+$('#fx').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{let A;if(window.XLSX){const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});A=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:''})}else if(/\.csv$/i.test(f.name))A=csvToA(await f.text());else{toast('بدون إنترنت يمكن استيراد ملفات CSV فقط');return}
+ let hr=A.findIndex(r=>r.some(c=>/اسم الطالب|^الاسم$/.test(String(c).trim())));if(hr<0)throw 0;const nc=A[hr].findIndex(c=>/اسم الطالب|^الاسم$/.test(String(c).trim()));
+ let keys=F;const hf=A[hr].findIndex(c=>/نصف السنة/.test(c));if(hf>0&&hf-nc-1===5){const sub=A[hr+1]||[],t=i=>/ثالث/.test(sub[i]);keys=['a1','b1','c1',t(nc+4)?'d1':'u1','m1','h','a2','b2','c2',t(hf+4)?'d2':'u2','m2','ef','ex','yr']}
+ const meta={};A.slice(0,hr).forEach(r=>r.forEach(c=>{c=String(c);[['subject',/المادة\s*[:：]\s*(.+)/],['cn',/الصف(?: والشعبة)?\s*[:：]\s*(.+)/],['teacher',/مدرس المادة\s*[:：]\s*(.+)/],['school',/المدرسة\s*[:：]\s*(.+)/],['year',/العام الدراسي\s*[:：]?\s*(.+)/]].forEach(([k,re])=>{const m=c.match(re);if(m&&m[1].trim())meta[k]=m[1].trim()})}));
+ let c=cls();if(meta.cn){c=D.classes.find(x=>x.name===meta.cn)||(D.classes.push(mk(meta.cn)),D.classes[D.classes.length-1]);D.cur=c.id}
+ if(meta.subject&&!c.subject)c.subject=meta.subject;['teacher','school','year'].forEach(k=>{if(meta[k]&&!D.meta[k])D.meta[k]=meta[k]});
+ let n=0;A.slice(hr+1).forEach(r=>{const nm=String(r[nc]).trim();if(!nm||/^(ت|اسم الطالب)$/.test(nm))return;const s=mkS(nm);
+  keys.forEach((k,j)=>{const x=num(r[nc+1+j]);if(x!=null&&(!C[k]||x!==val(s,k)))s.v[k]=String(x)});const t=String(r[nc+1+keys.length]||'').trim();if(t&&!/^(ناجح|مكمل|راسب)/.test(t))s.nt=t;c.students.push(s);n++});
+ upd();persist(true);toast(`تم استيراد ${n} طالب إلى ${c.name}`)}catch(x){toast('تعذر قراءة الملف: تأكد من وجود عمود "اسم الطالب"')}};
+function restore(j){try{const d=JSON.parse(j);if(!d.classes||!d.classes.length)throw 0;D=d;if(!D.classes.some(c=>c.id===D.cur))D.cur=D.classes[0].id;upd();persist(true);toast('تم استرداد النسخة')}catch(e){toast('ملف النسخة غير صالح')}}
+$('#bBk').onclick=()=>{let a=[];try{a=JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){}
+ modal('النسخ الاحتياطي والاسترداد',`<p>تُحفظ نسخ تلقائية داخل المتصفح، وننصح بتنزيل ملف JSON وحفظه خارج الجهاز.</p><div class="acts"><button class="btn go" id="k1">تنزيل نسخة احتياطية JSON</button><button class="btn" id="k2">استرداد من ملف JSON</button></div><h4>آخر النسخ التلقائية</h4>`+(a.length?a.map((s,i)=>`<div class="snap"><span>${new Date(s.t).toLocaleString('ar')}</span><button class="btn" data-r="${i}">استرداد</button></div>`).join(''):'<p class="empty">لا توجد نسخ تلقائية بعد. اضغط حفظ كل التغييرات لإنشاء واحدة.</p>'));
+ $('#k1').onclick=()=>dl('نسخة-سجل-الدرجات-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(D,null,1),'application/json');$('#k2').onclick=()=>$('#fj').click();
+ $('#dlg').onclick=e=>{const i=e.target.dataset.r;if(i!=null){restore(a[i].d);$('#dlg').close()}}};
+$('#fj').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(f){restore(await f.text());$('#dlg').close()}};
+function net(){const o=navigator.onLine;$('#net').classList.toggle('off',!o);$('#netx').textContent=o?'الحفظ التلقائي مفعل':'وضع أوفلاين (حفظ داخلي بالجهاز)'}
+addEventListener('online',net);addEventListener('offline',net);addEventListener('beforeunload',()=>persist());
+load();head();render();net();setInterval(()=>persist(),3e5);
+</script>
+</body>
+</html>
